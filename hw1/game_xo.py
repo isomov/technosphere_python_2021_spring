@@ -99,7 +99,11 @@ class TicTacGame:
                 print(inst)
                 continue
             self.board[i][j] = 'x' if self.turn_x else 'o'
-            if self.check_winner():
+            state = self.check_winner()
+            if state is None:
+                print('it is a draw!')
+                return
+            if state:
                 print('{} wins!'.format('x' if self.turn_x else 'o'))
                 return
             self.turn_x = not self.turn_x
@@ -108,6 +112,7 @@ class TicTacGame:
         """
             Checking is there a winner on the board.
         """
+        draw_condition = True
         for pos in self.pos_to_check:
             x_1 = self.board[pos[0][0]][pos[0][1]]
             x_2 = self.board[pos[1][0]][pos[1][1]]
@@ -115,6 +120,9 @@ class TicTacGame:
             line = {x_1, x_2, x_3}
             if len(line) == 1 and not '_' in line:
                 return True
+            draw_condition = draw_condition and 'x' in line and 'o' in line
+        if draw_condition:
+            return None
         return False
 
 if __name__ == '__main__':

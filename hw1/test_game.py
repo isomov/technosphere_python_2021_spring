@@ -25,6 +25,14 @@ class TestGameMethods(unittest.TestCase):
             value = fake_output.getvalue().strip()
             self.assertEqual(value.split('\n')[-1], 'o wins!')
 
+    @unittest.mock.patch('builtins.input', side_effect=['2 0', '2 1', '1 1', '0 0', '1 0', '1 2', '2 2', '0 2', '1 1'])
+    def test_start_game_draw(self, mock_input):
+        game = TicTacGame()
+        with unittest.mock.patch('sys.stdout', new=StringIO()) as fake_output:
+            game.start_game()
+            value = fake_output.getvalue().strip()
+            self.assertEqual(value.split('\n')[-1], 'it is a draw!')
+
     def test_check_winner(self):
         game = TicTacGame()
         game.board = [['o', 'x', '_'],
@@ -46,6 +54,11 @@ class TestGameMethods(unittest.TestCase):
                       ['_', 'o', '_'],
                       ['_', 'x', 'o']]
         self.assertFalse(game.check_winner())
+
+        game.board = [['x', 'o', 'x'],
+                      ['x', 'o', '_'],
+                      ['o', 'x', 'o']]
+        self.assertIsNone(game.check_winner())
 
     def test_validate_and_process_input(self):
         game = TicTacGame()
